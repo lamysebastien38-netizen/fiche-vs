@@ -1,0 +1,1616 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1a5fa8">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Fiche VS">
+<title>Fiche VS — Le Grésivaudan</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:system-ui,-apple-system,sans-serif;background:#eef2f7;min-height:100vh;padding-bottom:96px;max-width:480px;margin:0 auto}
+:root{--blue:#1a5fa8;--blueL:#e8f1fb;--blueMid:#4a85c8;--green:#2e7d52;--greenL:#e6f4ec;--orange:#d97706;--red:#c0392b;--redL:#fdecea;--gray:#64748b;--grayL:#f1f5f9;--border:#cbd5e1;--dark:#1e2330}
+
+header{background:var(--blue);color:#fff;padding:13px 15px 9px;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(26,95,168,.35)}
+.h-row{display:flex;align-items:center;gap:9px;margin-bottom:5px}
+.h-icon{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.h-titles{flex:1}
+.h-title{font-weight:700;font-size:.97rem;line-height:1.2}
+.h-sub{font-size:.67rem;opacity:.75}
+.h-badge{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.35);border-radius:20px;padding:3px 10px;font-size:.72rem;font-family:monospace;font-weight:700;white-space:nowrap;max-width:150px;overflow:hidden;text-overflow:ellipsis}
+.prog-wrap{background:rgba(255,255,255,.2);border-radius:4px;height:4px;overflow:hidden}
+.prog-fill{height:100%;background:#fff;border-radius:4px;transition:width .4s;width:0%}
+.prog-lbl{font-size:.61rem;opacity:.75;text-align:right;margin-top:2px}
+
+.sec{margin:10px 10px 0;background:#fff;border-radius:12px;box-shadow:0 1px 6px rgba(26,95,168,.09);overflow:hidden}
+.sec-hdr{display:flex;align-items:center;gap:8px;padding:12px 14px;background:var(--grayL);border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
+.sec-icon{font-size:1rem;width:22px;text-align:center;flex-shrink:0}
+.sec-title{font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--blue);flex:1}
+.sec-chev{font-size:.68rem;color:var(--gray);transition:transform .22s;display:inline-block}
+.sec-chev.open{transform:rotate(180deg)}
+.sec-body{padding:15px;display:flex;flex-direction:column;gap:13px}
+.sec-body.hidden{display:none}
+
+.field{display:flex;flex-direction:column;gap:5px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lbl{font-size:.68rem;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.04em}
+.hint{font-size:.66rem;color:var(--gray);margin-top:1px}
+.info-note{background:var(--blueL);border-left:3px solid var(--blue);padding:7px 11px;border-radius:0 7px 7px 0;font-size:.72rem;color:var(--blue);font-weight:500;line-height:1.5}
+
+input[type=text],input[type=number],input[type=email],textarea,select{
+  width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:9px;
+  font-family:inherit;font-size:.91rem;color:var(--dark);background:#fff;outline:none;-webkit-appearance:none;transition:border .15s}
+input:focus,textarea:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,95,168,.1)}
+textarea{resize:none;min-height:68px}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+
+/* ID GÉNÉRÉ */
+.id-box{background:var(--blueL);border:2px solid var(--blueMid);border-radius:9px;padding:11px 14px;font-family:monospace;font-size:1.15rem;font-weight:700;color:var(--blue);text-align:center;letter-spacing:.1em;min-height:44px;display:flex;align-items:center;justify-content:center}
+.id-hint{font-size:.66rem;color:var(--gray);text-align:center;margin-top:2px}
+
+/* GPS */
+.gps-row{display:flex;gap:8px}
+.btn-sm{border:none;border-radius:9px;padding:0 13px;font-size:.82rem;font-weight:700;cursor:pointer;flex-shrink:0;white-space:nowrap;height:44px;display:flex;align-items:center;gap:5px}
+.btn-blue{background:var(--blue);color:#fff}
+.gps-status{font-size:.67rem;margin-top:2px;font-weight:600}
+.gps-ok{color:var(--green)}
+.gps-info{color:var(--gray)}
+
+/* TOGGLES */
+.tg-grp{display:flex;gap:6px;flex-wrap:wrap}
+.tg-btn{flex:1;min-width:56px;padding:9px 5px;border:1.5px solid var(--border);border-radius:9px;background:#fff;color:var(--gray);font-family:inherit;font-size:.76rem;font-weight:700;cursor:pointer;text-align:center;-webkit-appearance:none;transition:all .14s;line-height:1.3}
+.tg-btn:active{transform:scale(.97)}
+.tg-btn.sel-g{background:var(--green);border-color:var(--green);color:#fff}
+.tg-btn.sel-o{background:var(--orange);border-color:var(--orange);color:#fff}
+.tg-btn.sel-r{background:var(--red);border-color:var(--red);color:#fff}
+.tg-btn.sel-b{background:var(--blue);border-color:var(--blue);color:#fff}
+
+/* COMPTEUR TOURS */
+.cnt-row{display:flex;align-items:center;gap:10px}
+.cnt-btn{width:44px;height:44px;border-radius:50%;border:2px solid var(--blue);background:#fff;color:var(--blue);font-size:1.5rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;-webkit-appearance:none}
+.cnt-btn:active{background:var(--blue);color:#fff}
+.cnt-inp{flex:1;text-align:center;font-family:monospace;font-size:1.55rem;font-weight:700;color:var(--blue);background:var(--blueL);border:1.5px solid var(--border);border-radius:9px;padding:7px 4px}
+
+/* SWITCH */
+.sw-row{display:flex;align-items:center;justify-content:space-between;padding:2px 0}
+.sw-lbl{font-size:.87rem;font-weight:500;color:var(--dark)}
+.sw{width:46px;height:26px;border-radius:13px;background:var(--border);position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
+.sw.on{background:var(--blue)}
+.sw-thumb{position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;top:3px;left:3px;transition:left .2s;box-shadow:0 1px 4px rgba(0,0,0,.22)}
+.sw.on .sw-thumb{left:23px}
+
+/* TAGS */
+.tags-wrap{display:flex;flex-wrap:wrap;gap:4px}
+.tag{display:inline-block;background:var(--blueL);color:var(--blue);border:1px solid #93b8e0;border-radius:18px;padding:5px 11px;font-size:.75rem;cursor:pointer;transition:all .14s;user-select:none}
+.tag:active{transform:scale(.96)}
+.tag.sel{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* PHOTOS */
+.ph-zone{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 14px;border:2px dashed var(--border);border-radius:9px;background:var(--grayL);cursor:pointer;font-size:.82rem;font-weight:600;color:var(--gray);transition:border .15s}
+.ph-zone:active{border-color:var(--blue)}
+.ph-prev{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.ph-wrap{position:relative;display:inline-block}
+.ph-img{width:78px;height:78px;object-fit:cover;border-radius:9px;border:1px solid var(--border);display:block}
+.ph-del{position:absolute;top:-7px;right:-7px;width:22px;height:22px;border-radius:50%;background:var(--red);color:#fff;border:none;font-size:.65rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700}
+
+/* CAPTURE ELYX */
+.elyx-btn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:13px;background:linear-gradient(135deg,#1a5fa8,#2e7d52);color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:.92rem;font-weight:700;cursor:pointer;text-decoration:none;transition:opacity .15s}
+.elyx-btn:active{opacity:.88}
+.capture-outer{border:2px dashed var(--border);border-radius:9px;overflow:hidden;background:var(--grayL);cursor:pointer;min-height:110px;display:flex;align-items:center;justify-content:center;position:relative}
+.capture-ph{text-align:center;padding:22px 16px;color:var(--gray)}
+.capture-ph .ic{font-size:2.2rem;margin-bottom:6px}
+.capture-ph p{font-size:.8rem;font-weight:600}
+.capture-ph small{font-size:.67rem;opacity:.75}
+canvas#cvs{width:100%;display:block;touch-action:none}
+.arrow-tools{display:none;margin-top:8px}
+.arrow-tools .row{display:flex;gap:7px}
+.arrow-info{background:var(--blueL);border-left:3px solid var(--blue);padding:7px 10px;border-radius:0 7px 7px 0;font-size:.72rem;color:var(--blue);font-weight:500;margin-bottom:8px}
+.btn-tool{flex:1;padding:9px 6px;background:var(--grayL);border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:.78rem;font-weight:600;cursor:pointer;color:var(--dark)}
+.btn-tool-red{background:var(--redL);border-color:var(--red);color:var(--red)}
+.divider{height:1px;background:var(--border)}
+
+/* RÉCAP */
+.recap-box{background:var(--greenL);border-radius:9px;padding:13px;font-size:.8rem;line-height:2;color:var(--dark)}
+
+/* FOOTER */
+footer{position:fixed;bottom:0;left:0;right:0;padding:10px 12px;background:#fff;border-top:1px solid var(--border);display:flex;gap:7px;z-index:100;box-shadow:0 -2px 10px rgba(0,0,0,.08);max-width:480px;margin:0 auto}
+.btn-reset{background:var(--grayL);color:var(--dark);border:1.5px solid var(--border);border-radius:10px;padding:13px 13px;font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer}
+.btn-word{flex:1;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:13px;font-family:inherit;font-size:.88rem;font-weight:700;cursor:pointer}
+.btn-mail{flex:1;background:var(--green);color:#fff;border:none;border-radius:10px;padding:13px;font-family:inherit;font-size:.88rem;font-weight:700;cursor:pointer}
+
+/* SCHÉMA */
+.stamp-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 8px;border:1.5px solid var(--border);border-radius:8px;background:#fff;cursor:pointer;font-family:inherit;font-size:.65rem;font-weight:700;color:var(--gray);transition:all .14s;-webkit-appearance:none}
+.stamp-btn.active{border-color:var(--blue);background:var(--blueL);color:var(--blue)}
+.stamp-preview{display:block}
+/* SCHÉMA CANVAS */
+.schema-toolbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:10px;background:var(--grayL);border-bottom:1px solid var(--border)}
+.tool-btn{padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;background:#fff;font-family:inherit;font-size:.75rem;font-weight:700;cursor:pointer;color:var(--gray);transition:all .14s;white-space:nowrap}
+.tool-btn.active{background:var(--blue);border-color:var(--blue);color:#fff}
+.tool-btn.active-r{background:var(--red);border-color:var(--red);color:#fff}
+.color-btn{width:28px;height:28px;border-radius:50%;border:2.5px solid transparent;cursor:pointer;flex-shrink:0;transition:border .14s}
+.color-btn.active{border-color:var(--dark)}
+.schema-canvas-wrap{position:relative;overflow:hidden;border-top:1px solid var(--border)}
+#schema-cvs{display:block;width:100%;touch-action:none;cursor:crosshair}
+.schema-footer{display:flex;gap:6px;padding:10px;background:var(--grayL);border-top:1px solid var(--border)}
+.stroke-wrap{display:flex;align-items:center;gap:6px;margin-left:auto}
+.stroke-lbl{font-size:.68rem;color:var(--gray);font-weight:600}
+input[type=range].stroke-slider{width:70px;height:4px;padding:0;border:none;background:var(--border);-webkit-appearance:none;border-radius:2px}
+input[type=range].stroke-slider::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--blue);cursor:pointer}
+
+/* TOAST */
+.toast{position:fixed;top:76px;left:50%;transform:translateX(-50%) translateY(-8px);background:var(--dark);color:#fff;padding:9px 20px;border-radius:22px;font-size:.82rem;font-weight:600;z-index:200;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.22);opacity:0;transition:all .28s;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="h-row">
+    <div class="h-icon">💧</div>
+    <div class="h-titles">
+      <div class="h-title">Le Grésivaudan</div>
+      <div class="h-sub">Réseau eau potable — Fiche VS</div>
+    </div>
+    <div class="h-badge" id="badge">——</div>
+  </div>
+  <div class="prog-wrap"><div class="prog-fill" id="prog-fill"></div></div>
+  <div class="prog-lbl" id="prog-lbl">0 % complété</div>
+</header>
+
+<!-- ══ 1. IDENTIFICATION ══ -->
+<div class="sec">
+  <div class="sec-hdr" onclick="toggleSec(this)">
+    <span class="sec-icon">📍</span>
+    <span class="sec-title">Identification & Localisation</span>
+    <span class="sec-chev open">▼</span>
+  </div>
+  <div class="sec-body">
+
+    <div class="field">
+      <label class="lbl">N° VS — généré automatiquement</label>
+      <div class="id-box" id="vs-num">——</div>
+      <div class="id-hint">Renseigne la commune et l'adresse pour générer l'identifiant</div>
+    </div>
+
+    <div class="field">
+      <label class="lbl">Commune</label>
+      <select id="commune" onchange="genId();updateProg()">
+        <option value="">— Choisir —</option>
+        <option>Bernin</option><option>Biviers</option><option>Brignoud</option>
+        <option>Chapareillan</option><option>Crolles</option><option>Domène</option>
+        <option>Froges</option><option>Goncelin</option><option>La Terrasse</option>
+        <option>La Tronche</option><option>Le Touvet</option><option>Lumbin</option>
+        <option>Meylan</option><option>Montbonnot</option><option>Murianette</option>
+        <option>Pontcharra</option><option>Sainte-Agnès</option><option>Saint-Ismier</option>
+        <option>Saint-Martin-d'Uriage</option><option>Saint-Nazaire-les-Eymes</option>
+        <option>Tencin</option><option>Theys</option><option>Villard-Bonnot</option>
+        <option>Autre</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label class="lbl">Adresse / Lieu-dit</label>
+      <input type="text" id="adresse" placeholder="Rue des Alpes, chemin du Moulin…" oninput="genId();updateProg()">
+    </div>
+
+    <div class="field">
+      <label class="lbl">Complément d'adresse</label>
+      <input type="text" id="compl" placeholder="En face du n°12, près du regard…">
+    </div>
+
+    <div class="field">
+      <label class="lbl">Coordonnées GPS</label>
+      <div class="gps-row">
+        <input type="text" id="gps" placeholder="ex : 45.234567, 5.987654" inputmode="decimal"
+          oninput="onGpsInput()">
+        <button class="btn-sm btn-blue" onclick="window.open('https://maps.google.com','_blank')">📍 Maps</button>
+      </div>
+      <div class="gps-status gps-info" id="gps-status">
+        Ouvre Google Maps → appui long → copie les coordonnées ici
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ 2. BOUCHE À CLÉ ══ -->
+<div class="sec">
+  <div class="sec-hdr" onclick="toggleSec(this)">
+    <span class="sec-icon">🔑</span>
+    <span class="sec-title">Bouche à Clé (BAC)</span>
+    <span class="sec-chev open">▼</span>
+  </div>
+  <div class="sec-body">
+
+    <div class="field">
+      <label class="lbl">État de la BAC</label>
+      <div class="tg-grp">
+        <button class="tg-btn" onclick="selTg(this,'bac-etat','g')">✅ Bon</button>
+        <button class="tg-btn" onclick="selTg(this,'bac-etat','o')">🔧 À remplacer</button>
+        <button class="tg-btn" onclick="selTg(this,'bac-etat','r')">🪨 À bétonner</button>
+      </div>
+      <input type="hidden" id="bac-etat">
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="field">
+      <label class="lbl">Profondeur (cm)</label>
+      <div style="display:flex;align-items:center;gap:10px">
+        <input type="number" id="profondeur" inputmode="numeric" min="0" max="500"
+          placeholder="ex : 45" style="flex:1">
+        <span style="font-size:.82rem;color:var(--gray);font-weight:600;flex-shrink:0">cm</span>
+      </div>
+      <div class="hint">Profondeur du carré de vanne ou de la chambre</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="field">
+      <label class="lbl">Type de vanne</label>
+      <div class="tg-grp">
+        <button class="tg-btn" onclick="selTg(this,'type-vanne','b')">Trivanne</button>
+        <button class="tg-btn" onclick="selTg(this,'type-vanne','b')">Quadrivanne</button>
+
+      </div>
+      <input type="hidden" id="type-vanne">
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="field">
+      <label class="lbl">Carré accessible</label>
+      <div class="tg-grp">
+        <button class="tg-btn" onclick="selTg(this,'carre','g')">✅ Oui</button>
+        <button class="tg-btn" onclick="selTg(this,'carre','r')">❌ Non</button>
+        <button class="tg-btn" onclick="selTg(this,'carre','o')">🪣 À curer</button>
+        <button class="tg-btn" onclick="selTg(this,'carre','o')">🏗️ Travaux</button>
+      </div>
+      <input type="hidden" id="carre">
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="sw-row">
+      <span class="sw-lbl">VS en chambre</span>
+      <div class="sw" id="sw-chambre" onclick="toggleSw('sw-chambre','chambre-fields')">
+        <div class="sw-thumb"></div>
+      </div>
+    </div>
+
+    <div id="chambre-fields" style="display:none;flex-direction:column;gap:12px">
+
+      <div class="field">
+        <label class="lbl">Niveau CATEC</label>
+        <div class="tg-grp">
+          <button class="tg-btn" onclick="selTg(this,'catec','b')">Niv. 1</button>
+          <button class="tg-btn" onclick="selTg(this,'catec','b')">Niv. 2</button>
+          <button class="tg-btn" onclick="selTg(this,'catec','b')">Niv. 3</button>
+        </div>
+        <input type="hidden" id="catec">
+      </div>
+
+      <div class="field">
+        <label class="lbl">État chambre</label>
+        <div class="tg-grp">
+          <button class="tg-btn" onclick="selTg(this,'etat-chambre','g')">✅ Correct</button>
+          <button class="tg-btn" onclick="selTg(this,'etat-chambre','o')">⚠️ Moyen</button>
+          <button class="tg-btn" onclick="selTg(this,'etat-chambre','r')">🧹 À nettoyer</button>
+        </div>
+        <input type="hidden" id="etat-chambre">
+      </div>
+
+      <div class="field">
+        <label class="lbl">État tampon</label>
+        <div class="tg-grp">
+          <button class="tg-btn" onclick="selTg(this,'etat-tampon','g')">✅ Correct</button>
+          <button class="tg-btn" onclick="selTg(this,'etat-tampon','r')">🔧 À remplacer</button>
+        </div>
+        <input type="hidden" id="etat-tampon">
+      </div>
+
+      <div class="field">
+        <label class="lbl">Accessibilité chambre</label>
+        <div class="tg-grp">
+          <button class="tg-btn" onclick="selTg(this,'access-chambre','g')">✅ Bon</button>
+          <button class="tg-btn" onclick="selTg(this,'access-chambre','o')">⚠️ Moyen</button>
+          <button class="tg-btn" onclick="selTg(this,'access-chambre','r')">❌ Difficile</button>
+        </div>
+        <input type="hidden" id="access-chambre">
+      </div>
+
+      <!-- Photos chambre -->
+      <div class="field">
+        <label class="lbl">Photos de la chambre</label>
+        <label class="ph-zone" for="ph-chambre">📷 Photographier la chambre</label>
+        <input type="file" id="ph-chambre" accept="image/*" capture="environment" multiple style="display:none" onchange="handlePhotos(this,'prev-chambre')">
+        <div class="ph-prev" id="prev-chambre"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══ 3. VANNE ══ -->
+<div class="sec">
+  <div class="sec-hdr" onclick="toggleSec(this)">
+    <span class="sec-icon">🔧</span>
+    <span class="sec-title">Caractéristiques de la Vanne</span>
+    <span class="sec-chev open">▼</span>
+  </div>
+  <div class="sec-body">
+
+    <div class="field">
+      <label class="lbl">Sens de fermeture</label>
+      <div class="tg-grp">
+        <button class="tg-btn" style="padding:10px 5px" onclick="selTg(this,'sens','b')">
+          ↺ FAH<br><small style="font-size:.65rem;font-weight:400">Anti-horaire</small>
+        </button>
+        <button class="tg-btn" style="padding:10px 5px" onclick="selTg(this,'sens','b')">
+          ↻ FSH<br><small style="font-size:.65rem;font-weight:400">Sens horaire</small>
+        </button>
+      </div>
+      <input type="hidden" id="sens">
+    </div>
+
+    <div class="field">
+      <label class="lbl">Nombre de tours</label>
+      <div class="cnt-row">
+        <button class="cnt-btn" onclick="chTours(-1)">−</button>
+        <input class="cnt-inp" type="number" id="tours" inputmode="numeric"
+          min="0" step="1" placeholder="0" oninput="updateProg()">
+        <button class="cnt-btn" onclick="chTours(1)">+</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="lbl">Diamètre VS estimé</label>
+      <div class="tg-grp" id="diam-grp">
+        <button class="tg-btn" onclick="selDiam(this,50)">DN 50</button>
+        <button class="tg-btn" onclick="selDiam(this,63)">DN 63</button>
+        <button class="tg-btn" onclick="selDiam(this,80)">DN 80</button>
+        <button class="tg-btn" onclick="selDiam(this,100)">DN 100</button>
+        <button class="tg-btn" onclick="selDiam(this,125)">DN 125</button>
+        <button class="tg-btn" onclick="selDiam(this,150)">DN 150</button>
+        <button class="tg-btn" onclick="selDiam(this,200)">DN 200</button>
+        <button class="tg-btn" onclick="selDiam(this,0)">Autre</button>
+      </div>
+      <input type="hidden" id="diametre">
+      <input type="number" id="diam-autre" placeholder="Diamètre en mm"
+        min="25" max="600" style="display:none;margin-top:8px">
+    </div>
+
+    <div class="field">
+      <label class="lbl">VS maillée</label>
+      <div class="tg-grp">
+        <button class="tg-btn" onclick="selTg(this,'vs-maillee','g')">✅ Oui</button>
+        <button class="tg-btn" onclick="selTg(this,'vs-maillee','r')">❌ Non</button>
+      </div>
+      <input type="hidden" id="vs-maillee">
+    </div>
+
+    <div class="field">
+      <label class="lbl">Vanne VDG</label>
+      <div class="tg-grp">
+        <button class="tg-btn" onclick="selTg(this,'vanne-vdg','g')">✅ Oui</button>
+        <button class="tg-btn" onclick="selTg(this,'vanne-vdg','r')">❌ Non</button>
+      </div>
+      <input type="hidden" id="vanne-vdg">
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ 4. OBSERVATIONS ══ -->
+<div class="sec">
+  <div class="sec-hdr" onclick="toggleSec(this)">
+    <span class="sec-icon">📝</span>
+    <span class="sec-title">Observations & Anomalies</span>
+    <span class="sec-chev open">▼</span>
+  </div>
+  <div class="sec-body">
+
+    <div class="field">
+      <label class="lbl">Anomalies constatées</label>
+      <div class="tags-wrap">
+        <span class="tag" onclick="toggleTag(this)">Point dur</span>
+        <span class="tag" onclick="toggleTag(this)">Vanne dure</span>
+        <span class="tag" onclick="toggleTag(this)">Sous enrobé</span>
+        <span class="tag" onclick="toggleTag(this)">Non trouvée</span>
+        <span class="tag" onclick="toggleTag(this)">Eau en chambre</span>
+        <span class="tag" onclick="toggleTag(this)">Fuite presse-étoupe</span>
+        <span class="tag" onclick="toggleTag(this)">Accès routier dangereux</span>
+        <span class="tag" onclick="toggleTag(this)">Envasement</span>
+        <span class="tag" onclick="toggleTag(this)">Petit carré</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="lbl">Observations libres</label>
+      <textarea id="observations" placeholder="Contexte particulier, info utile pour le suivi…"></textarea>
+    </div>
+
+    <div class="field">
+      <label class="lbl">Priorité d'intervention</label>
+      <div class="tg-grp">
+        <button class="tg-btn" onclick="selTg(this,'priorite','g')">🟢 Faible</button>
+        <button class="tg-btn" onclick="selTg(this,'priorite','o')">🟡 Moyenne</button>
+        <button class="tg-btn" onclick="selTg(this,'priorite','r')">🔴 Urgente</button>
+      </div>
+      <input type="hidden" id="priorite">
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ 5. PHOTOS ══ -->
+<div class="sec">
+  <div class="sec-hdr" onclick="toggleSec(this)">
+    <span class="sec-icon">📷</span>
+    <span class="sec-title">Photos terrain</span>
+    <span class="sec-chev open">▼</span>
+  </div>
+  <div class="sec-body">
+    <div class="info-note">Photographier la BAC, le carré de vanne, la rue, et toute anomalie visible.</div>
+
+    <div class="field">
+      <label class="ph-zone" for="ph-bac">📸 BAC / Carré de vanne</label>
+      <input type="file" id="ph-bac" accept="image/*" capture="environment" multiple style="display:none" onchange="handlePhotos(this,'prev-bac')">
+      <div class="ph-prev" id="prev-bac"></div>
+    </div>
+
+    <div class="field">
+      <label class="ph-zone" for="ph-env">📸 Environnement / Rue</label>
+      <input type="file" id="ph-env" accept="image/*" capture="environment" multiple style="display:none" onchange="handlePhotos(this,'prev-env')">
+      <div class="ph-prev" id="prev-env"></div>
+    </div>
+
+    <div class="field">
+      <label class="ph-zone" for="ph-anom">📸 Anomalie (si présente)</label>
+      <input type="file" id="ph-anom" accept="image/*" capture="environment" multiple style="display:none" onchange="handlePhotos(this,'prev-anom')">
+      <div class="ph-prev" id="prev-anom"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 6. PLAN RÉSEAU ELYX ══ -->
+<div class="sec">
+  <div class="sec-hdr" onclick="toggleSec(this)">
+    <span class="sec-icon">🗺️</span>
+    <span class="sec-title">Plan réseau Elyx</span>
+    <span class="sec-chev open">▼</span>
+  </div>
+  <div class="sec-body">
+
+    <div class="info-note">Le plan s'ouvre dans un nouvel onglet et reste accessible pendant la saisie de la fiche.</div>
+
+    <a class="elyx-btn"
+       href="https://www.carto-g.fr/adws/app/97475b69-9c86-11ed-b5ba-6b0baf0c422a/index.html"
+       target="_blank" rel="noopener">
+      🗺️ Ouvrir le plan réseau Grésivaudan ↗
+    </a>
+
+    <div class="field">
+      <label class="lbl">Capture du plan — position de la vanne</label>
+      <div class="info-note" style="margin-bottom:0">
+        1 · Ouvre le plan ci-dessus &nbsp; 2 · Localise la vanne &nbsp; 3 · Fais une capture d'écran &nbsp; 4 · Importe-la ici et place une flèche
+      </div>
+
+      <!-- Zone capture -->
+      <div class="capture-outer" id="capture-outer" onclick="triggerCapture()">
+        <div id="capture-ph" class="capture-ph">
+          <div class="ic">🗺️</div>
+          <p>Appuyer pour importer la capture</p>
+          <small>Sélectionne la capture depuis ta galerie</small>
+        </div>
+        <canvas id="cvs" style="display:none"></canvas>
+      </div>
+      <input type="file" id="ph-capture" accept="image/*" style="display:none" onchange="loadCapture(this)">
+
+      <!-- Outils flèche -->
+      <div class="arrow-tools" id="arrow-tools">
+        <div class="arrow-info">👆 Appuie pour placer la flèche · Glisse pour la repositionner</div>
+        <div class="row">
+          <button class="btn-tool btn-tool-red" onclick="clearArrows()">🗑️ Supprimer la flèche</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ 7. PARAMÈTRES ══ -->
+<div class="sec">
+  <div class="sec-hdr" onclick="toggleSec(this)">
+    <span class="sec-icon">⚙️</span>
+    <span class="sec-title">Paramètres d'envoi</span>
+    <span class="sec-chev">▼</span>
+  </div>
+  <div class="sec-body hidden">
+    <div class="info-note">Ces paramètres sont propres à chaque appareil.</div>
+
+    <div class="field">
+      <label class="lbl">Nom de l'agent</label>
+      <input type="text" id="agent-name" placeholder="ex : Dupont Martin" oninput="saveSettings()">
+      <div class="hint">Apparaîtra dans les fiches envoyées</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="field">
+      <label class="lbl">Plage de numéros attribuée</label>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input type="number" id="seq-start" placeholder="Début" min="1" max="9999"
+          style="flex:1" oninput="saveSettings();previewSeq()">
+        <span style="font-size:.82rem;color:var(--gray);font-weight:600;flex-shrink:0">→</span>
+        <input type="number" id="seq-end" placeholder="Fin" min="1" max="9999"
+          style="flex:1" oninput="saveSettings();previewSeq()">
+      </div>
+      <div class="hint" id="seq-preview">Défini par l'administrateur — ex : 001 → 100</div>
+      <div class="info-note" style="margin-top:6px" id="seq-current-info">
+        Prochain numéro disponible : <b id="seq-next-display">—</b>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="field">
+      <label class="lbl">Adresse mail de destination</label>
+      <div style="display:flex;gap:8px">
+        <input type="email" id="mail-dest" value="lamysebastien.38@gmail.com" style="flex:1">
+        <button onclick="saveMail()" class="btn-sm btn-blue" style="background:var(--green)">OK</button>
+      </div>
+      <div class="hint">Destination : <b id="mail-display">lamysebastien.38@gmail.com</b></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ RÉCAP ══ -->
+<div class="sec" id="recap-sec" style="display:none">
+  <div class="sec-hdr" onclick="toggleSec(this)">
+    <span class="sec-icon">✅</span>
+    <span class="sec-title">Récapitulatif</span>
+    <span class="sec-chev open">▼</span>
+  </div>
+  <div class="sec-body">
+    <div class="recap-box" id="recap-box"></div>
+  </div>
+</div>
+
+<!-- ══ SCHÉMA DE MODIFICATION ══ -->
+<div class="sec" id="schema-sec" style="display:none">
+  <div class="sec-hdr" onclick="toggleSec(this)">
+    <span class="sec-icon">✏️</span>
+    <span class="sec-title">Schéma de modification</span>
+    <span class="sec-chev open">▼</span>
+  </div>
+  <div class="sec-body" style="padding:0;gap:0">
+
+    <!-- BARRE D'OUTILS -->
+    <div class="schema-toolbar">
+      <!-- Outils -->
+      <button class="tool-btn active" id="tool-pen" onclick="setTool('pen')">✏️ Stylo</button>
+      <button class="tool-btn" id="tool-line" onclick="setTool('line')">📏 Ligne</button>
+      <button class="tool-btn" id="tool-eraser" onclick="setTool('eraser')">🧹 Gomme</button>
+      <!-- Séparateur -->
+      <div style="width:1px;height:24px;background:var(--border);margin:0 2px"></div>
+      <!-- Couleurs -->
+      <div class="color-btn active" id="col-black" style="background:#1e2330" onclick="setColor('#1e2330')"></div>
+      <div class="color-btn" id="col-red" style="background:#e63946" onclick="setColor('#e63946')"></div>
+      <div class="color-btn" id="col-blue" style="background:#1a5fa8" onclick="setColor('#1a5fa8')"></div>
+      <div class="color-btn" id="col-green" style="background:#2e7d52" onclick="setColor('#2e7d52')"></div>
+      <div class="color-btn" id="col-orange" style="background:#d97706" onclick="setColor('#d97706')"></div>
+      <!-- Fond quadrillé -->
+      <button class="tool-btn" id="btn-grid" onclick="toggleGrid()">⊞ Grille</button>
+    </div>
+
+    <!-- BARRE TAMPONS -->
+    <div style="display:flex;gap:8px;align-items:center;padding:8px 10px;background:#fff;border-bottom:1px solid var(--border);flex-wrap:wrap">
+      <span style="font-size:.67rem;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.04em;flex-shrink:0">Tampons :</span>
+      <button class="stamp-btn" id="stamp-open" onclick="setStamp('open')" title="Vanne ouverte">
+        <canvas class="stamp-preview" id="prev-open" width="32" height="32"></canvas>
+        <span>Ouverte</span>
+      </button>
+      <button class="stamp-btn" id="stamp-closed" onclick="setStamp('closed')" title="Vanne fermée">
+        <canvas class="stamp-preview" id="prev-closed" width="32" height="32"></canvas>
+        <span>Fermée</span>
+      </button>
+      <button class="stamp-btn" id="stamp-branch" onclick="setStamp('branch')" title="Branchement">
+        <canvas class="stamp-preview" id="prev-branch" width="32" height="32"></canvas>
+        <span>Branchement</span>
+      </button>
+      <button class="stamp-btn" id="stamp-branchf" onclick="setStamp('branchf')" title="Branchement fermé">
+        <canvas class="stamp-preview" id="prev-branchf" width="32" height="32"></canvas>
+        <span>Branch. fermé</span>
+      </button>
+      <button class="stamp-btn" id="stamp-arrow" onclick="setStamp('arrow')" title="Sens d'écoulement">
+        <canvas class="stamp-preview" id="prev-arrow" width="32" height="32"></canvas>
+        <span>Sens</span>
+      </button>
+      <button class="tool-btn" onclick="schemaUndo()" style="margin-left:auto;flex-shrink:0">↩ Annuler</button>
+    </div>
+    <div style="padding:4px 10px 6px;background:#fff;border-bottom:1px solid var(--border)">
+      <span style="font-size:.63rem;color:var(--gray)">← Sélectionne un tampon puis pose-le sur le schéma · Appuie pour annuler le dernier geste</span>
+    </div>
+
+    <!-- CANVAS -->
+    <div class="schema-canvas-wrap">
+      <canvas id="schema-cvs"></canvas>
+    </div>
+
+    <!-- BAS DE BARRE -->
+    <div class="schema-footer">
+      <button class="tool-btn" onclick="schemaClear()" style="color:var(--red);border-color:var(--red)">🗑️ Effacer tout</button>
+      <div class="stroke-wrap">
+        <span class="stroke-lbl">Épaisseur</span>
+        <input type="range" class="stroke-slider" id="stroke-size" min="1" max="20" value="3" oninput="updateStroke(this.value)">
+        <span class="stroke-lbl" id="stroke-val">3</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Bouton pour afficher/masquer le schéma -->
+<div style="margin:10px 10px 0;text-align:center">
+  <button onclick="toggleSchema()" id="schema-toggle-btn"
+    style="width:100%;padding:12px;background:#fff;border:2px dashed var(--border);border-radius:12px;font-family:inherit;font-size:.85rem;font-weight:700;color:var(--gray);cursor:pointer;transition:all .2s">
+    ✏️ Afficher / Masquer le schéma de modification
+  </button>
+</div>
+
+<div style="height:14px"></div>
+
+<div style="text-align:center;padding:6px 12px 0;font-size:.6rem;color:var(--gray)">
+  Outil conçu par <b>Lamy Sébastien</b> — CC du Grésivaudan, Service eau potable · 2025
+</div>
+
+<footer>
+  <button class="btn-reset" onclick="resetForm()" title="Réinitialiser">🗑️</button>
+  <button class="btn-word" onclick="downloadWord()">📄 Word</button>
+  <button class="btn-mail" onclick="downloadThenMail()">✉️ Mail</button>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══ ABRÉVIATIONS COMMUNES ══
+const ABBR = {
+  'Bernin':'BER','Biviers':'BIV','Brignoud':'BRI','Chapareillan':'CHA',
+  'Crolles':'CRO','Domène':'DOM','Froges':'FRO','Goncelin':'GON',
+  'La Terrasse':'TER','La Tronche':'TRO','Le Touvet':'TOU','Lumbin':'LUM',
+  'Meylan':'MEY','Montbonnot':'MON','Murianette':'MUR','Pontcharra':'PON',
+  'Sainte-Agnès':'AGN','Saint-Ismier':'ISM',"Saint-Martin-d'Uriage":'URI',
+  'Saint-Nazaire-les-Eymes':'NAZ','Tencin':'TEN','Theys':'THE',
+  'Villard-Bonnot':'VIL','Autre':'AUT'
+};
+
+
+
+let currentId = '——';
+let idLocked = false; // verrouillé après génération pour cette fiche
+
+// ── GESTION PLAGE ──
+function getRange() {
+  const start = parseInt(localStorage.getItem('vs-seq-start')) || 1;
+  const end   = parseInt(localStorage.getItem('vs-seq-end'))   || 9999;
+  return { start, end };
+}
+
+function getCurrentSeqForCommune(abbr) {
+  const counters = JSON.parse(localStorage.getItem('vs-counters') || '{}');
+  const range = getRange();
+  // Initialiser au début de la plage si pas encore utilisé sur cet appareil
+  if(!counters[abbr] || counters[abbr] < range.start) counters[abbr] = range.start - 1;
+  return counters[abbr];
+}
+
+function peekSeq(abbr) {
+  const next = getCurrentSeqForCommune(abbr) + 1;
+  const range = getRange();
+  if(next > range.end) return 'MAX';
+  return String(next).padStart(3,'0');
+}
+
+function getNextSeq(abbr) {
+  const counters = JSON.parse(localStorage.getItem('vs-counters') || '{}');
+  const range = getRange();
+  if(!counters[abbr] || counters[abbr] < range.start) counters[abbr] = range.start - 1;
+  if(counters[abbr] >= range.end) {
+    showToast('⚠️ Plage épuisée pour ' + abbr + ' — contacter l\'administrateur');
+    return String(counters[abbr]).padStart(3,'0');
+  }
+  counters[abbr]++;
+  localStorage.setItem('vs-counters', JSON.stringify(counters));
+  return String(counters[abbr]).padStart(3,'0');
+}
+
+function previewSeq() {
+  const start = document.getElementById('seq-start').value;
+  const end   = document.getElementById('seq-end').value;
+  const el    = document.getElementById('seq-preview');
+  if(start && end) {
+    el.textContent = `Plage : ${String(parseInt(start)).padStart(3,'0')} → ${String(parseInt(end)).padStart(3,'0')}`;
+  }
+  updateSeqDisplay();
+}
+
+function updateSeqDisplay() {
+  const commune = document.getElementById('commune').value;
+  const el = document.getElementById('seq-next-display');
+  if(!commune || !el) return;
+  const abbr = ABBR[commune] || commune.substring(0,3).toUpperCase();
+  const next = getCurrentSeqForCommune(abbr) + 1;
+  const range = getRange();
+  if(next > range.end) {
+    el.textContent = '⚠️ Plage épuisée';
+    el.style.color = 'var(--red)';
+  } else {
+    el.textContent = abbr + '-' + String(next).padStart(3,'0');
+    el.style.color = 'var(--blue)';
+  }
+}
+
+function saveSettings() {
+  const name  = document.getElementById('agent-name').value;
+  const start = document.getElementById('seq-start').value;
+  const end   = document.getElementById('seq-end').value;
+  if(name)  localStorage.setItem('vs-agent', name);
+  if(start) localStorage.setItem('vs-seq-start', start);
+  if(end)   localStorage.setItem('vs-seq-end', end);
+}
+
+function genId() {
+  if(idLocked) return;
+  const commune = document.getElementById('commune').value;
+  const adresse = document.getElementById('adresse').value.trim();
+  if(!commune || !adresse) {
+    currentId = '——';
+    document.getElementById('vs-num').textContent = '——';
+    document.getElementById('badge').textContent = '——';
+    return;
+  }
+  const abbr = ABBR[commune] || commune.substring(0,3).toUpperCase();
+  const seq = peekSeq(abbr);
+  if(seq === 'MAX') {
+    showToast('⚠️ Plage épuisée — contacter l\'administrateur');
+    return;
+  }
+  currentId = abbr + '-' + seq;
+  document.getElementById('vs-num').textContent = currentId;
+  document.getElementById('badge').textContent = currentId;
+  updateProg();
+}
+
+function lockId() {
+  if(idLocked) return currentId;
+  const commune = document.getElementById('commune').value;
+  if(!commune) return '—';
+  const abbr = ABBR[commune] || commune.substring(0,3).toUpperCase();
+  const seq = getNextSeq(abbr);
+  currentId = abbr + '-' + seq;
+  idLocked = true;
+  document.getElementById('vs-num').textContent = currentId;
+  document.getElementById('badge').textContent = currentId;
+  return currentId;
+}
+
+// ══ GPS → ADRESSE AUTOMATIQUE ══
+let gpsTimer = null;
+function onGpsInput() {
+  clearTimeout(gpsTimer);
+  const val = document.getElementById('gps').value.trim();
+  const st = document.getElementById('gps-status');
+  if(val.length < 8) { st.className='gps-status gps-info'; st.textContent='Ouvre Google Maps → appui long → copie les coordonnées ici'; return; }
+  const parts = val.split(',');
+  if(parts.length !== 2) return;
+  const lat = parseFloat(parts[0]), lon = parseFloat(parts[1]);
+  if(isNaN(lat)||isNaN(lon)) return;
+  st.className='gps-status gps-info'; st.textContent='📡 Recherche de l\'adresse…';
+  gpsTimer = setTimeout(() => reverseGeocode(lat, lon), 800);
+  updateProg();
+}
+
+function reverseGeocode(lat, lon) {
+  const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=fr`;
+  const st = document.getElementById('gps-status');
+  fetch(url, {headers:{'Accept-Language':'fr'}})
+    .then(r => r.json())
+    .then(data => {
+      if(!data.address) return;
+      const a = data.address;
+      const road = a.road || a.pedestrian || a.path || '';
+      const num = a.house_number ? a.house_number+' ' : '';
+      const city = a.city || a.town || a.village || a.municipality || '';
+      const adresseField = document.getElementById('adresse');
+      const communeField = document.getElementById('commune');
+      if(road && !adresseField.value) adresseField.value = num + road;
+      // Remplir commune si vide et correspondance trouvée
+      if(city && !communeField.value) {
+        const opt = Array.from(communeField.options).find(o =>
+          o.text.toLowerCase().includes(city.toLowerCase()) ||
+          city.toLowerCase().includes(o.text.toLowerCase()));
+        if(opt) communeField.value = opt.value;
+      }
+      st.className='gps-status gps-ok';
+      st.textContent = '✅ ' + (data.display_name ? data.display_name.split(',').slice(0,3).join(', ') : `${lat}, ${lon}`);
+      genId();
+      updateProg();
+    })
+    .catch(() => {
+      st.className='gps-status gps-ok';
+      st.textContent = '✅ GPS enregistré : ' + lat.toFixed(5) + ', ' + lon.toFixed(5);
+    });
+}
+
+// ══ TOGGLE SECTION ══
+function toggleSec(hdr) {
+  const body = hdr.nextElementSibling;
+  const chev = hdr.querySelector('.sec-chev');
+  const hidden = body.classList.contains('hidden');
+  body.classList.toggle('hidden', !hidden);
+  chev.classList.toggle('open', hidden);
+}
+
+// ══ TOGGLE BUTTONS ══
+function selTg(btn, id, col) {
+  btn.parentElement.querySelectorAll('.tg-btn')
+    .forEach(b => b.classList.remove('sel-g','sel-b','sel-o','sel-r'));
+  btn.classList.add('sel-'+col);
+  const h = document.getElementById(id);
+  if(h) h.value = btn.textContent.trim();
+  updateProg();
+}
+
+// ══ DIAMETRE ══
+function selDiam(btn, val) {
+  document.querySelectorAll('#diam-grp .tg-btn').forEach(b => b.classList.remove('sel-b'));
+  btn.classList.add('sel-b');
+  const autre = document.getElementById('diam-autre');
+  const h = document.getElementById('diametre');
+  if(val===0){ autre.style.display='block'; h.value=''; }
+  else { autre.style.display='none'; h.value='DN '+val; }
+  updateProg();
+}
+
+// ══ TOURS ══
+function chTours(d) {
+  const inp = document.getElementById('tours');
+  let v = parseInt(inp.value)||0;
+  v = Math.max(0, v+d);
+  inp.value = v===0?'':v;
+  updateProg();
+}
+
+// ══ SWITCH ══
+const swStates = {};
+function toggleSw(swId, fieldId) {
+  swStates[swId] = !swStates[swId];
+  const sw = document.getElementById(swId);
+  sw.classList.toggle('on', swStates[swId]);
+  document.getElementById(fieldId).style.display = swStates[swId]?'flex':'none';
+}
+
+// ══ TAGS ══
+function toggleTag(el) { el.classList.toggle('sel'); }
+
+// ══ PROGRESSION ══
+function updateProg() {
+  const scored = [
+    currentId !== '——' ? 1:0,
+    document.getElementById('commune').value ? 1:0,
+    document.getElementById('adresse').value ? 1:0,
+    document.getElementById('gps').value ? 1:0,
+    document.getElementById('bac-etat').value ? 1:0,
+    document.getElementById('carre').value ? 1:0,
+    document.getElementById('sens').value ? 1:0,
+    document.getElementById('tours').value ? 1:0,
+    document.getElementById('diametre').value ? 1:0,
+  ];
+  const pct = Math.round(scored.reduce((a,b)=>a+b,0) / scored.length * 100);
+  document.getElementById('prog-fill').style.width = pct+'%';
+  document.getElementById('prog-lbl').textContent = pct+'% complété';
+  if(pct>=60){ buildRecap(); document.getElementById('recap-sec').style.display='block'; }
+  else document.getElementById('recap-sec').style.display='none';
+}
+
+// ══ RÉCAP ══
+function buildRecap() {
+  const diam = g('diametre') || (g('diam-autre')?g('diam-autre')+' mm':'—');
+  const tags = Array.from(document.querySelectorAll('.tag.sel')).map(t=>t.textContent);
+  const prio = g('priorite');
+  const pCol = prio==='🔴 Urgente'?'#c0392b':prio==='🟡 Moyenne'?'#d97706':'#2e7d52';
+  document.getElementById('recap-box').innerHTML =
+    `<b>N° VS :</b> ${currentId} &nbsp;|&nbsp; <b>Commune :</b> ${g('commune')||'—'}<br>
+     <b>Adresse :</b> ${g('adresse')||'—'}${g('compl')?' — '+g('compl'):''}<br>
+     <b>GPS :</b> ${g('gps')||'—'}<br>
+     <b>BAC :</b> ${g('bac-etat')||'—'} &nbsp;|&nbsp; <b>Carré :</b> ${g('carre')||'—'}<br>
+     <b>Fermeture :</b> ${g('sens')||'—'} &nbsp;|&nbsp; <b>Tours :</b> ${g('tours')||'0'}<br>
+     <b>Diamètre :</b> ${diam}<br>
+     ${tags.length?`<b>Anomalies :</b> <span style="color:#c0392b">${tags.join(', ')}</span><br>`:''}
+     ${prio?`<b>Priorité :</b> <span style="color:${pCol};font-weight:700">${prio}</span>`:''}`;
+}
+function g(id){ return (document.getElementById(id)||{}).value||''; }
+
+// ══ PHOTOS ══
+function handlePhotos(input, prevId) {
+  const prev = document.getElementById(prevId);
+  Array.from(input.files).forEach(file => {
+    const r = new FileReader();
+    r.onload = e => {
+      const w = document.createElement('div'); w.className='ph-wrap';
+      w.innerHTML=`<img class="ph-img" src="${e.target.result}">
+        <button class="ph-del" onclick="this.parentElement.remove()">✕</button>`;
+      prev.appendChild(w);
+    };
+    r.readAsDataURL(file);
+  });
+}
+
+// ══ CAPTURE ELYX + FLÈCHE REPOSITIONNABLE ══
+let captureBase = null;
+let arrow = null;       // Une seule flèche, repositionnable
+let dragging = false;
+let cvs, ctx;
+
+function triggerCapture() {
+  if(captureBase) return;
+  document.getElementById('ph-capture').click();
+}
+
+function loadCapture(input) {
+  if(!input.files[0]) return;
+  const r = new FileReader();
+  r.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      captureBase = img;
+      arrow = null;
+      cvs = document.getElementById('cvs');
+      ctx = cvs.getContext('2d');
+      cvs.width = img.width;
+      cvs.height = img.height;
+      document.getElementById('capture-ph').style.display='none';
+      cvs.style.display='block';
+      document.getElementById('arrow-tools').style.display='block';
+      document.getElementById('capture-outer').onclick = null;
+      // Événements souris
+      cvs.addEventListener('mousedown', onDown);
+      cvs.addEventListener('mousemove', onMove);
+      cvs.addEventListener('mouseup', onUp);
+      // Événements tactiles
+      cvs.addEventListener('touchstart', onTouchStart, {passive:false});
+      cvs.addEventListener('touchmove', onTouchMove, {passive:false});
+      cvs.addEventListener('touchend', onTouchEnd, {passive:false});
+      redraw();
+    };
+    img.src = e.target.result;
+  };
+  r.readAsDataURL(input.files[0]);
+}
+
+function cvsPos(e) {
+  const r = cvs.getBoundingClientRect();
+  return {
+    x: (e.clientX - r.left) * (cvs.width / r.width),
+    y: (e.clientY - r.top) * (cvs.height / r.height)
+  };
+}
+
+function hitArrow(pos) {
+  if(!arrow) return false;
+  const dx = pos.x - arrow.x, dy = pos.y - arrow.y;
+  const hitR = Math.min(cvs.width, cvs.height) * 0.08;
+  return Math.sqrt(dx*dx+dy*dy) < hitR;
+}
+
+function onDown(e) {
+  const pos = cvsPos(e);
+  if(hitArrow(pos)) { dragging = true; }
+  else { arrow = pos; dragging = true; redraw(); }
+}
+function onMove(e) {
+  if(!dragging) return;
+  arrow = cvsPos(e);
+  redraw();
+}
+function onUp() { dragging = false; }
+
+function onTouchStart(e) {
+  e.preventDefault();
+  const pos = cvsPos(e.touches[0]);
+  if(hitArrow(pos)) { dragging = true; }
+  else { arrow = pos; dragging = true; redraw(); }
+}
+function onTouchMove(e) {
+  e.preventDefault();
+  if(!dragging) return;
+  arrow = cvsPos(e.touches[0]);
+  redraw();
+}
+function onTouchEnd(e) { e.preventDefault(); dragging = false; }
+
+function redraw() {
+  if(!ctx||!captureBase) return;
+  ctx.clearRect(0,0,cvs.width,cvs.height);
+  ctx.drawImage(captureBase,0,0);
+  if(arrow) drawArrow(arrow.x, arrow.y);
+}
+
+function drawArrow(x, y) {
+  const size = Math.min(cvs.width, cvs.height) * 0.12;
+  const lw = Math.max(4, cvs.width * 0.009);
+  const angle = Math.PI * 0.25;
+  const x0 = x - Math.cos(angle+Math.PI)*size;
+  const y0 = y - Math.sin(angle+Math.PI)*size;
+  ctx.save();
+  ctx.strokeStyle='#e63946'; ctx.fillStyle='#e63946';
+  ctx.lineWidth=lw; ctx.lineCap='round'; ctx.lineJoin='round';
+  ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x,y); ctx.stroke();
+  const hw = size * 0.42;
+  const a1 = angle+2.4, a2 = angle-2.4;
+  ctx.beginPath();
+  ctx.moveTo(x,y);
+  ctx.lineTo(x+Math.cos(a1)*hw, y+Math.sin(a1)*hw);
+  ctx.lineTo(x+Math.cos(a2)*hw, y+Math.sin(a2)*hw);
+  ctx.closePath(); ctx.fill();
+  // Poignée de déplacement (cercle semi-transparent sur la pointe)
+  ctx.globalAlpha=0.25;
+  ctx.beginPath();
+  ctx.arc(x,y,hw*0.9,0,Math.PI*2);
+  ctx.fill();
+  ctx.globalAlpha=1;
+  ctx.restore();
+}
+
+function undoArrow() { arrow=null; redraw(); }
+function clearArrows() { arrow=null; redraw(); }
+
+// ══ MAIL ══
+function saveMail() {
+  const m = document.getElementById('mail-dest').value;
+  document.getElementById('mail-display').textContent=m;
+  localStorage.setItem('vs-mail',m);
+  showToast('✅ Adresse enregistrée');
+}
+
+// ══ WORD ══
+function downloadWord() {
+  const vsNum = lockId();
+  const commune = g('commune') || '—';
+  const diam = g('diametre') || (g('diam-autre')?g('diam-autre')+' mm':'—');
+  const tags = Array.from(document.querySelectorAll('.tag.sel')).map(t=>t.textContent);
+  const chambre = swStates['sw-chambre'];
+  const filename = vsNum && vsNum!=='——'
+    ? `Fiche-VS-${vsNum}-${commune.replace(/[\s']/g,'-')}.doc`
+    : `Fiche-VS-${commune.replace(/[\s']/g,'-')}-${Date.now()}.doc`;
+
+  const html=`<html xmlns:o='urn:schemas-microsoft-com:office:office'
+xmlns:w='urn:schemas-microsoft-com:office:word'
+xmlns='http://www.w3.org/TR/REC-html40'>
+<head><meta charset='utf-8'><title>Fiche VS ${vsNum}</title>
+<style>
+body{font-family:Arial,sans-serif;font-size:11pt;margin:2cm}
+h1{color:#1a5fa8;font-size:14pt;border-bottom:2px solid #1a5fa8;padding-bottom:4px;margin-bottom:8px}
+h2{color:#1a5fa8;font-size:11pt;background:#e8f1fb;padding:4px 8px;margin-top:16px;margin-bottom:4px}
+table{width:100%;border-collapse:collapse}
+td{border:1px solid #cbd5e1;padding:5px 9px;font-size:10pt;vertical-align:top}
+td.l{background:#f1f5f9;font-weight:bold;width:42%}
+.r{color:#c0392b}.footer{font-size:9pt;color:#64748b;margin-top:22px}
+</style></head>
+<body>
+<p style="color:#1a5fa8;font-size:10pt;margin-bottom:6px">💧 Le Grésivaudan — Communauté de communes — Réseau eau potable</p>
+<h1>FICHE VANNE DE SECTION — ${vsNum||'—'}</h1>
+<h2>📍 Localisation</h2>
+<table>
+<tr><td class="l">N° VS</td><td><b>${vsNum||'—'}</b></td></tr>
+<tr><td class="l">Agent</td><td>${localStorage.getItem('vs-agent')||'—'}</td></tr>
+<tr><td class="l">Commune</td><td>${commune}</td></tr>
+<tr><td class="l">Adresse</td><td>${g('adresse')||'—'}${g('compl')?' — '+g('compl'):''}</td></tr>
+<tr><td class="l">Coordonnées GPS</td><td>${g('gps')||'—'}</td></tr>
+</table>
+<h2>🔑 Bouche à Clé (BAC)</h2>
+<table>
+<tr><td class="l">État BAC</td><td>${g('bac-etat')||'—'}</td></tr>
+<tr><td class="l">Type de vanne</td><td>${g('type-vanne')||'—'}</td></tr>
+<tr><td class="l">Profondeur</td><td>${g('profondeur') ? g('profondeur')+' cm' : '—'}</td></tr>
+<tr><td class="l">Carré accessible</td><td>${g('carre')||'—'}</td></tr>
+<tr><td class="l">VS en chambre</td><td>${chambre?'Oui':'Non'}</td></tr>
+${chambre?`<tr><td class="l">Niveau CATEC</td><td>${g('catec')||'—'}</td></tr>
+<tr><td class="l">État chambre</td><td>${g('etat-chambre')||'—'}</td></tr>
+<tr><td class="l">État tampon</td><td>${g('etat-tampon')||'—'}</td></tr>
+<tr><td class="l">Accessibilité</td><td>${g('access-chambre')||'—'}</td></tr>`:''}
+</table>
+<h2>🔧 Caractéristiques de la Vanne</h2>
+<table>
+<tr><td class="l">Sens de fermeture</td><td>${g('sens')||'—'}</td></tr>
+<tr><td class="l">Nombre de tours</td><td>${g('tours')||'0'}</td></tr>
+<tr><td class="l">Diamètre VS estimé</td><td>${diam}</td></tr>
+<tr><td class="l">VS maillée</td><td>${g('vs-maillee')||'—'}</td></tr>
+<tr><td class="l">Vanne VDG</td><td>${g('vanne-vdg')||'—'}</td></tr>
+</table>
+<h2>📝 Observations</h2>
+<table>
+<tr><td class="l">Anomalies</td><td class="r">${tags.length?tags.join(', '):'Aucune'}</td></tr>
+<tr><td class="l">Observations</td><td>${g('observations')||'—'}</td></tr>
+<tr><td class="l">Priorité</td><td>${g('priorite')||'—'}</td></tr>
+</table>
+<p class="footer">Fiche générée le ${new Date().toLocaleDateString('fr-FR')} — Le Grésivaudan, Service eau potable</p>
+<p style="font-size:8pt;color:#94a3b8;margin-top:4px">Outil conçu par Lamy Sébastien — CC du Grésivaudan · 2025. Diffusion soumise à autorisation de l'auteur.</p>
+</body></html>`;
+
+  const blob = new Blob(['\ufeff',html], {type:'application/msword'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  showToast('📄 '+filename);
+}
+
+// ══ TÉLÉCHARGER WORD PUIS OUVRIR MAIL ══
+function downloadThenMail() {
+  // Génère et télécharge le Word
+  downloadWord();
+  // Petit délai puis ouvre le mail pré-rempli
+  setTimeout(() => {
+    const vsNum = currentId!=='——' ? currentId : '—';
+    const commune = g('commune')||'—';
+    const dest = document.getElementById('mail-dest').value||'lamysebastien.38@gmail.com';
+    const diam = g('diametre')||(g('diam-autre')?g('diam-autre')+' cm':'—');
+    const tags = Array.from(document.querySelectorAll('.tag.sel')).map(t=>t.textContent);
+    const chambre = swStates['sw-chambre'];
+    const subj = encodeURIComponent(`Fiche VS ${vsNum} — ${commune}`);
+    const body = encodeURIComponent(
+`FICHE VANNE DE SECTION — ${vsNum}
+Agent   : ${localStorage.getItem('vs-agent')||'—'}
+Commune : ${commune}
+Adresse : ${g('adresse')||'—'}${g('compl')?' / '+g('compl'):''}
+GPS     : ${g('gps')||'—'}
+
+── BAC ──────────────────────
+État BAC   : ${g('bac-etat')||'—'}
+Type vanne : ${g('type-vanne')||'—'}
+Profondeur : ${g('profondeur') ? g('profondeur')+' cm' : '—'}
+Carré      : ${g('carre')||'—'}
+En chambre : ${chambre?'Oui':'Non'}${chambre?`
+Niv. CATEC : ${g('catec')||'—'}
+État ch.   : ${g('etat-chambre')||'—'}
+Tampon     : ${g('etat-tampon')||'—'}
+Access.    : ${g('access-chambre')||'—'}`:''}
+
+── VANNE ────────────────────
+Fermeture  : ${g('sens')||'—'}
+Tours      : ${g('tours')||'0'}
+Diamètre   : ${diam}
+Maillée    : ${g('vs-maillee')||'—'}
+VDG        : ${g('vanne-vdg')||'—'}
+
+── OBSERVATIONS ─────────────
+Anomalies  : ${tags.length?tags.join(', '):'Aucune'}
+Priorité   : ${g('priorite')||'—'}
+Notes      : ${g('observations')||'—'}
+
+─────────────────────────────
+⚠️ Le fichier Word a été téléchargé sur votre appareil.
+Pensez à le joindre à ce mail avant d'envoyer.
+─────────────────────────────
+Appli Fiche VS — Le Grésivaudan — ${new Date().toLocaleDateString('fr-FR')}
+Outil conçu par Lamy Sébastien — diffusion soumise à autorisation de l'auteur.`);
+    window.location.href=`mailto:${dest}?subject=${subj}&body=${body}`;
+  }, 800);
+}
+
+// ══ MAIL ══
+function sendMail() {
+  const vsNum = lockId();
+  const commune = g('commune')||'—';
+  const dest = document.getElementById('mail-dest').value||'lamysebastien.38@gmail.com';
+  const diam = g('diametre')||(g('diam-autre')?g('diam-autre')+' mm':'—');
+  const tags = Array.from(document.querySelectorAll('.tag.sel')).map(t=>t.textContent);
+  const chambre = swStates['sw-chambre'];
+  const subj = encodeURIComponent(`Fiche VS ${vsNum} — ${commune}`);
+  const body = encodeURIComponent(
+`FICHE VANNE DE SECTION — ${vsNum||'—'}
+Commune : ${commune}
+Adresse : ${g('adresse')||'—'}${g('compl')?' / '+g('compl'):''}
+GPS     : ${g('gps')||'—'}
+
+── BAC ──────────────────────
+État BAC   : ${g('bac-etat')||'—'}
+Type vanne : ${g('type-vanne')||'—'}
+Profondeur : ${g('profondeur') ? g('profondeur')+' cm' : '—'}
+Carré      : ${g('carre')||'—'}
+En chambre : ${chambre?'Oui':'Non'}${chambre?`
+Niv. CATEC : ${g('catec')||'—'}
+État ch.   : ${g('etat-chambre')||'—'}
+Tampon     : ${g('etat-tampon')||'—'}
+Access.    : ${g('access-chambre')||'—'}`:''}
+
+── VANNE ────────────────────
+Fermeture  : ${g('sens')||'—'}
+Tours      : ${g('tours')||'0'}
+Diamètre   : ${diam}
+Maillée    : ${g('vs-maillee')||'—'}
+VDG        : ${g('vanne-vdg')||'—'}
+
+── OBSERVATIONS ─────────────
+Anomalies  : ${tags.length?tags.join(', '):'Aucune'}
+Priorité   : ${g('priorite')||'—'}
+Notes      : ${g('observations')||'—'}
+
+─────────────────────────────
+Appli Fiche VS — Le Grésivaudan — ${new Date().toLocaleDateString('fr-FR')}
+Outil conçu par Lamy Sébastien — diffusion soumise à autorisation de l'auteur.`);
+  window.location.href=`mailto:${dest}?subject=${subj}&body=${body}`;
+}
+
+// ══ RESET ══
+function resetForm() {
+  if(!confirm('Réinitialiser la fiche ?')) return;
+  ['adresse','compl','gps','observations','diam-autre','tours','profondeur'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  document.getElementById('commune').value='';
+  ['bac-etat','type-vanne','carre','catec','etat-chambre','etat-tampon','access-chambre','sens','diametre','vs-maillee','vanne-vdg','priorite'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  document.querySelectorAll('.tg-btn').forEach(b=>b.classList.remove('sel-g','sel-b','sel-o','sel-r'));
+  document.querySelectorAll('.tag').forEach(t=>t.classList.remove('sel'));
+  document.querySelectorAll('.ph-prev').forEach(p=>p.innerHTML='');
+  document.getElementById('diam-autre').style.display='none';
+  swStates['sw-chambre']=false;
+  document.getElementById('sw-chambre').classList.remove('on');
+  document.getElementById('chambre-fields').style.display='none';
+  // Reset capture
+  captureBase=null; arrow=null; dragging=false;
+  const cvsEl=document.getElementById('cvs');
+  if(cvsEl){ cvsEl.style.display='none'; if(ctx) ctx.clearRect(0,0,cvsEl.width,cvsEl.height); }
+  document.getElementById('capture-ph').style.display='block';
+  document.getElementById('arrow-tools').style.display='none';
+  document.getElementById('capture-outer').onclick=triggerCapture;
+  document.getElementById('ph-capture').value='';
+  // Reset ID
+  currentId='——'; idLocked=false;
+  document.getElementById('vs-num').textContent='——';
+  document.getElementById('badge').textContent='——';
+  document.getElementById('gps-status').className='gps-status gps-info';
+  document.getElementById('gps-status').textContent='Ouvre Google Maps → appui long → copie les coordonnées ici';
+  document.getElementById('recap-sec').style.display='none';
+  document.getElementById('prog-fill').style.width='0%';
+  document.getElementById('prog-lbl').textContent='0% complété';
+  showToast('🗑️ Fiche réinitialisée');
+}
+
+// ══ SCHÉMA DE DESSIN ══
+let sCvs, sCtx;
+let sTool = 'pen';
+let sColor = '#1e2330';
+let sSize = 3;
+let sDrawing = false;
+let sGrid = false;
+let sHistory = [];
+let sLineStart = null;
+let sSnapshot = null; // pour preview ligne
+
+// ══ TAMPONS PRÉDÉFINIS ══
+const STAMPS = {
+  open: { size: 28, draw: (ctx, x, y, s) => {
+    // Sablier BLEU = vanne ouverte (axe vertical)
+    const h = s*0.45, w = s*0.28;
+    ctx.save();
+    ctx.strokeStyle='#1a5fa8'; ctx.fillStyle='rgba(26,95,168,0.15)';
+    ctx.lineWidth=Math.max(1.5, s*0.055); ctx.lineJoin='round';
+    // Sablier (2 triangles pointe à pointe)
+    ctx.beginPath();
+    ctx.moveTo(x-w, y-h); ctx.lineTo(x+w, y-h); // haut
+    ctx.lineTo(x, y);                              // pointe haute
+    ctx.lineTo(x+w, y+h); ctx.lineTo(x-w, y+h);  // bas
+    ctx.lineTo(x, y); ctx.closePath();
+    ctx.fill(); ctx.stroke();
+    // Petits barres horizontales haut et bas
+    ctx.beginPath(); ctx.moveTo(x-w,y-h); ctx.lineTo(x+w,y-h); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x-w,y+h); ctx.lineTo(x+w,y+h); ctx.stroke();
+    ctx.restore();
+  }},
+  closed: { size: 28, draw: (ctx, x, y, s) => {
+    // Sablier ROUGE = vanne fermée (même forme, couleur rouge)
+    const h = s*0.45, w = s*0.28;
+    ctx.save();
+    ctx.strokeStyle='#e63946'; ctx.fillStyle='rgba(230,57,70,0.18)';
+    ctx.lineWidth=Math.max(1.5, s*0.055); ctx.lineJoin='round';
+    ctx.beginPath();
+    ctx.moveTo(x-w, y-h); ctx.lineTo(x+w, y-h);
+    ctx.lineTo(x, y);
+    ctx.lineTo(x+w, y+h); ctx.lineTo(x-w, y+h);
+    ctx.lineTo(x, y); ctx.closePath();
+    ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x-w,y-h); ctx.lineTo(x+w,y-h); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x-w,y+h); ctx.lineTo(x+w,y+h); ctx.stroke();
+    // Croix rouge pour fermeture
+    ctx.strokeStyle='#e63946'; ctx.lineWidth=Math.max(1,s*0.04);
+    ctx.beginPath(); ctx.moveTo(x-w*0.5,y-h*0.3); ctx.lineTo(x+w*0.5,y+h*0.3); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x+w*0.5,y-h*0.3); ctx.lineTo(x-w*0.5,y+h*0.3); ctx.stroke();
+    ctx.restore();
+  }},
+  branch: { size: 22, draw: (ctx, x, y, s) => {
+    // Rond plein NOIR = branchement
+    ctx.save();
+    ctx.fillStyle='#1e2330'; ctx.strokeStyle='#1e2330';
+    ctx.lineWidth=Math.max(1, s*0.04);
+    ctx.beginPath(); ctx.arc(x, y, s*0.38, 0, Math.PI*2); ctx.fill();
+    ctx.restore();
+  }},
+  tee: { size: 26, draw: (ctx, x, y, s) => {
+    // Té réseau — T noir
+    const r = s*0.38;
+    ctx.save();
+    ctx.strokeStyle='#1e2330'; ctx.lineWidth=Math.max(2, s*0.07);
+    ctx.lineCap='round';
+    // Barre horizontale
+    ctx.beginPath(); ctx.moveTo(x-r,y); ctx.lineTo(x+r,y); ctx.stroke();
+    // Branche du bas
+    ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x,y+r); ctx.stroke();
+    ctx.restore();
+  }},
+  branchf: { size: 22, draw: (ctx, x, y, s) => {
+    // Rond vide NOIR + croix = branchement fermé
+    const r = s*0.38;
+    ctx.save();
+    ctx.strokeStyle='#1e2330'; ctx.lineWidth=Math.max(1.5, s*0.06);
+    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.stroke();
+    // Croix à l'intérieur
+    const cr = r*0.55;
+    ctx.beginPath(); ctx.moveTo(x-cr,y-cr); ctx.lineTo(x+cr,y+cr); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x+cr,y-cr); ctx.lineTo(x-cr,y+cr); ctx.stroke();
+    ctx.restore();
+  }},
+  arrow: { size: 26, draw: (ctx, x, y, s) => {
+    // Flèche de sens d'écoulement — noire
+    const r = s*0.38, hw=s*0.2;
+    ctx.save();
+    ctx.strokeStyle='#1e2330'; ctx.fillStyle='#1e2330';
+    ctx.lineWidth=Math.max(1.5, s*0.055); ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(x-r,y); ctx.lineTo(x+r*0.4,y); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);
+    ctx.lineTo(x+r-hw,y-hw*0.7);
+    ctx.lineTo(x+r-hw,y+hw*0.7);
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }}
+};
+
+let currentStamp = null;
+
+function drawStampPreview(id, key, size) {
+  const cv = document.getElementById(id);
+  if(!cv) return;
+  const ctx2 = cv.getContext('2d');
+  ctx2.clearRect(0,0,32,32);
+  STAMPS[key].draw(ctx2, 16, 16, size);
+}
+
+function initStampPreviews() {
+  drawStampPreview('prev-open',   'open',   22);
+  drawStampPreview('prev-closed', 'closed', 22);
+  drawStampPreview('prev-branch', 'branch', 18);
+  drawStampPreview('prev-branchf','branchf',18);
+  drawStampPreview('prev-arrow',  'arrow',  22);
+}
+
+function setStamp(key) {
+  if(currentStamp === key) {
+    // Désélectionner si déjà actif
+    currentStamp = null;
+    document.querySelectorAll('.stamp-btn').forEach(b=>b.classList.remove('active'));
+    // Remettre le dernier outil dessin actif
+    setTool(sTool);
+    return;
+  }
+  currentStamp = key;
+  document.querySelectorAll('.stamp-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('stamp-'+key).classList.add('active');
+  // Désactiver les outils dessin visuellement
+  ['pen','line','eraser'].forEach(id=>{
+    document.getElementById('tool-'+id).classList.remove('active','active-r');
+  });
+  sCvs.style.cursor='copy';
+}
+
+function placeStamp(pos) {
+  if(!currentStamp || !sCtx) return;
+  const stampSize = Math.min(sCvs.offsetWidth, sCvs.offsetHeight) * 0.09;
+  saveHistory();
+  STAMPS[currentStamp].draw(sCtx, pos.x, pos.y, stampSize);
+  saveHistory();
+}
+
+function initSchema() {
+  sCvs = document.getElementById('schema-cvs');
+  sCtx = sCvs.getContext('2d');
+  // Taille canvas = largeur affichée × ratio
+  const dpr = window.devicePixelRatio || 1;
+  const w = sCvs.parentElement.offsetWidth;
+  const h = Math.round(w * 0.75); // ratio 4:3
+  sCvs.width = w * dpr;
+  sCvs.height = h * dpr;
+  sCvs.style.height = h + 'px';
+  sCtx.scale(dpr, dpr);
+  drawGrid();
+  saveHistory();
+
+  sCvs.addEventListener('mousedown', sDown);
+  sCvs.addEventListener('mousemove', sMove);
+  sCvs.addEventListener('mouseup', sUp);
+  sCvs.addEventListener('mouseleave', sUp);
+  sCvs.addEventListener('touchstart', sTouchStart, {passive:false});
+  sCvs.addEventListener('touchmove', sTouchMove, {passive:false});
+  sCvs.addEventListener('touchend', sTouchEnd, {passive:false});
+}
+
+function sCvsPos(e) {
+  const r = sCvs.getBoundingClientRect();
+  return { x: e.clientX - r.left, y: e.clientY - r.top };
+}
+
+function drawGrid() {
+  if(!sGrid) return;
+  const dpr = window.devicePixelRatio||1;
+  const w = sCvs.width/dpr, h = sCvs.height/dpr;
+  const step = 20;
+  sCtx.save();
+  sCtx.strokeStyle = '#d1d9e0';
+  sCtx.lineWidth = 0.5;
+  for(let x=0;x<=w;x+=step){ sCtx.beginPath(); sCtx.moveTo(x,0); sCtx.lineTo(x,h); sCtx.stroke(); }
+  for(let y=0;y<=h;y+=step){ sCtx.beginPath(); sCtx.moveTo(0,y); sCtx.lineTo(w,y); sCtx.stroke(); }
+  sCtx.restore();
+}
+
+function sDown(e) {
+  const p = sCvsPos(e);
+  if(currentStamp) { placeStamp(p); return; }
+  sDrawing = true;
+  if(sTool==='pen'||sTool==='eraser') {
+    sCtx.beginPath(); sCtx.moveTo(p.x,p.y);
+  } else if(sTool==='line') {
+    sLineStart = p;
+    sSnapshot = sCtx.getImageData(0,0,sCvs.width,sCvs.height);
+  }
+}
+
+function sMove(e) {
+  if(!sDrawing) return;
+  const p = sCvsPos(e);
+  if(sTool==='pen') {
+    sCtx.lineTo(p.x,p.y);
+    sCtx.strokeStyle = sColor;
+    sCtx.lineWidth = sSize;
+    sCtx.lineCap = 'round';
+    sCtx.lineJoin = 'round';
+    sCtx.stroke();
+  } else if(sTool==='eraser') {
+    sCtx.lineTo(p.x,p.y);
+    sCtx.strokeStyle = '#ffffff';
+    sCtx.lineWidth = sSize * 4;
+    sCtx.lineCap = 'round';
+    sCtx.stroke();
+    // Redessiner la grille par-dessus pour la préserver
+    if(sGrid) drawGrid();
+  } else if(sTool==='line' && sLineStart && sSnapshot) {
+    sCtx.putImageData(sSnapshot,0,0);
+    sCtx.beginPath();
+    sCtx.moveTo(sLineStart.x, sLineStart.y);
+    sCtx.lineTo(p.x, p.y);
+    sCtx.strokeStyle = sColor;
+    sCtx.lineWidth = sSize;
+    sCtx.lineCap = 'round';
+    sCtx.stroke();
+  }
+}
+
+function sUp() {
+  if(!sDrawing) return;
+  sDrawing = false;
+  sLineStart = null; sSnapshot = null;
+  sCtx.beginPath();
+  saveHistory();
+}
+
+function sTouchStart(e) { e.preventDefault(); sDown(e.touches[0]); }
+function sTouchMove(e) { e.preventDefault(); sMove(e.touches[0]); }
+function sTouchEnd(e) { e.preventDefault(); sUp(); }
+
+function saveHistory() {
+  if(sHistory.length > 30) sHistory.shift();
+  sHistory.push(sCtx.getImageData(0,0,sCvs.width,sCvs.height));
+}
+
+function setTool(t) {
+  sTool = t;
+  ['pen','line','eraser'].forEach(id => {
+    const btn = document.getElementById('tool-'+id);
+    btn.classList.remove('active','active-r');
+  });
+  const btn = document.getElementById('tool-'+t);
+  btn.classList.add(t==='eraser'?'active-r':'active');
+  sCvs.style.cursor = t==='eraser'?'cell':'crosshair';
+}
+
+function setColor(col) {
+  sColor = col;
+  document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+  const map = {'#1e2330':'col-black','#e63946':'col-red','#1a5fa8':'col-blue','#2e7d52':'col-green','#d97706':'col-orange'};
+  const el = document.getElementById(map[col]);
+  if(el) el.classList.add('active');
+}
+
+function toggleGrid() {
+  sGrid = !sGrid;
+  const btn = document.getElementById('btn-grid');
+  btn.classList.toggle('active', sGrid);
+  // Redessiner avec ou sans grille
+  const last = sHistory[sHistory.length-1];
+  if(last) {
+    sCtx.putImageData(last,0,0);
+    if(sGrid) drawGrid();
+  }
+}
+
+function schemaUndo() {
+  if(sHistory.length <= 1) return;
+  sHistory.pop();
+  const prev = sHistory[sHistory.length-1];
+  sCtx.putImageData(prev,0,0);
+  if(sGrid) drawGrid();
+}
+
+function schemaClear() {
+  if(!confirm('Effacer le schéma ?')) return;
+  const dpr = window.devicePixelRatio||1;
+  sCtx.clearRect(0,0,sCvs.width/dpr,sCvs.height/dpr);
+  if(sGrid) drawGrid();
+  saveHistory();
+}
+
+function updateStroke(v) {
+  sSize = parseInt(v);
+  document.getElementById('stroke-val').textContent = v;
+}
+
+let schemaVisible = false;
+function toggleSchema() {
+  schemaVisible = !schemaVisible;
+  const sec = document.getElementById('schema-sec');
+  sec.style.display = schemaVisible ? 'block' : 'none';
+  const btn = document.getElementById('schema-toggle-btn');
+  btn.style.borderColor = schemaVisible ? 'var(--blue)' : 'var(--border)';
+  btn.style.color = schemaVisible ? 'var(--blue)' : 'var(--gray)';
+  if(schemaVisible && !sCvs) {
+    setTimeout(() => { initSchema(); initStampPreviews(); }, 80); // laisser le DOM s'afficher
+  }
+}
+
+// ══ TOAST ══
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+// ══ INIT ══
+window.addEventListener('load',()=>{
+  const m = localStorage.getItem('vs-mail');
+  if(m){ document.getElementById('mail-dest').value=m; document.getElementById('mail-display').textContent=m; }
+  const agent = localStorage.getItem('vs-agent');
+  if(agent) document.getElementById('agent-name').value = agent;
+  const seqStart = localStorage.getItem('vs-seq-start');
+  const seqEnd   = localStorage.getItem('vs-seq-end');
+  if(seqStart) document.getElementById('seq-start').value = seqStart;
+  if(seqEnd)   document.getElementById('seq-end').value   = seqEnd;
+  previewSeq();
+});
+</script>
+</body>
+</html>
